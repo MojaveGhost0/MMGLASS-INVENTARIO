@@ -15,20 +15,20 @@ CREATE TABLE IF NOT EXISTS public.perfiles (
 ALTER TABLE public.perfiles ENABLE ROW LEVEL SECURITY;
 
 -- 3. Políticas para perfiles
--- Los usuarios pueden leer su propio perfil
-CREATE POLICY "Permitir a los usuarios leer su propio perfil" 
-ON public.perfiles FOR SELECT 
-USING ( auth.uid() = id );
+-- Eliminar políticas viejas
+DROP POLICY IF EXISTS "Permitir a los usuarios leer su propio perfil" ON public.perfiles;
+DROP POLICY IF EXISTS "Admins pueden ver todos los perfiles" ON public.perfiles;
+DROP POLICY IF EXISTS "Admins pueden actualizar perfiles" ON public.perfiles;
 
--- Los admins pueden leer todos los perfiles
-CREATE POLICY "Admins pueden ver todos los perfiles" 
+-- Permitir a todos los usuarios autenticados leer los perfiles (Evita recursión infinita)
+CREATE POLICY "Usuarios pueden ver perfiles" 
 ON public.perfiles FOR SELECT 
-USING ( (SELECT rol FROM public.perfiles WHERE id = auth.uid()) = 'admin' );
+USING ( true );
 
--- Los admins pueden actualizar perfiles
+-- Los admins pueden actualizar perfiles (Aquí sí usamos subquery segura)
 CREATE POLICY "Admins pueden actualizar perfiles" 
 ON public.perfiles FOR UPDATE 
-USING ( (SELECT rol FROM public.perfiles WHERE id = auth.uid()) = 'admin' );
+USING ( (SELECT rol FROM public.perfiles WHERE id = auth.uid() LIMIT 1) = 'admin' );
 
 -- 4. Trigger para crear perfil automáticamente al registrarse
 CREATE OR REPLACE FUNCTION public.handle_new_user()
@@ -58,16 +58,24 @@ ON CONFLICT (id) DO UPDATE SET rol = 'admin';
 -- Eliminar las políticas anteriores si existían
 DROP POLICY IF EXISTS "auth_all_productos" ON public.productos;
 DROP POLICY IF EXISTS "auth_all_movimientos" ON public.movimientos;
+DROP POLICY IF EXISTS "Usuarios pueden leer productos" ON public.productos;
+DROP POLICY IF EXISTS "Usuarios pueden leer movimientos" ON public.movimientos;
+DROP POLICY IF EXISTS "Admins pueden insertar productos" ON public.productos;
+DROP POLICY IF EXISTS "Admins pueden actualizar productos" ON public.productos;
+DROP POLICY IF EXISTS "Admins pueden eliminar productos" ON public.productos;
+DROP POLICY IF EXISTS "Admins pueden insertar movimientos" ON public.movimientos;
+DROP POLICY IF EXISTS "Admins pueden actualizar movimientos" ON public.movimientos;
+DROP POLICY IF EXISTS "Admins pueden eliminar movimientos" ON public.movimientos;
 
 -- Todos los autenticados pueden LEER productos y movimientos
 CREATE POLICY "Usuarios pueden leer productos" ON public.productos FOR SELECT USING (true);
 CREATE POLICY "Usuarios pueden leer movimientos" ON public.movimientos FOR SELECT USING (true);
 
 -- SOLO los administradores pueden INSERTAR, ACTUALIZAR, o ELIMINAR
-CREATE POLICY "Admins pueden insertar productos" ON public.productos FOR INSERT WITH CHECK ( (SELECT rol FROM public.perfiles WHERE id = auth.uid()) = 'admin' );
-CREATE POLICY "Admins pueden actualizar productos" ON public.productos FOR UPDATE USING ( (SELECT rol FROM public.perfiles WHERE id = auth.uid()) = 'admin' );
-CREATE POLICY "Admins pueden eliminar productos" ON public.productos FOR DELETE USING ( (SELECT rol FROM public.perfiles WHERE id = auth.uid()) = 'admin' );
+CREATE POLICY "Admins pueden insertar productos" ON public.productos FOR INSERT WITH CHECK ( (SELECT rol FROM public.perfiles WHERE id = auth.uid() LIMIT 1) = 'admin' );
+CREATE POLICY "Admins pueden actualizar productos" ON public.productos FOR UPDATE USING ( (SELECT rol FROM public.perfiles WHERE id = auth.uid() LIMIT 1) = 'admin' );
+CREATE POLICY "Admins pueden eliminar productos" ON public.productos FOR DELETE USING ( (SELECT rol FROM public.perfiles WHERE id = auth.uid() LIMIT 1) = 'admin' );
 
-CREATE POLICY "Admins pueden insertar movimientos" ON public.movimientos FOR INSERT WITH CHECK ( (SELECT rol FROM public.perfiles WHERE id = auth.uid()) = 'admin' );
-CREATE POLICY "Admins pueden actualizar movimientos" ON public.movimientos FOR UPDATE USING ( (SELECT rol FROM public.perfiles WHERE id = auth.uid()) = 'admin' );
-CREATE POLICY "Admins pueden eliminar movimientos" ON public.movimientos FOR DELETE USING ( (SELECT rol FROM public.perfiles WHERE id = auth.uid()) = 'admin' );
+CREATE POLICY "Admins pueden insertar movimientos" ON public.movimientos FOR INSERT WITH CHECK ( (SELECT rol FROM public.perfiles WHERE id = auth.uid() LIMIT 1) = 'admin' );
+CREATE POLICY "Admins pueden actualizar movimientos" ON public.movimientos FOR UPDATE USING ( (SELECT rol FROM public.perfiles WHERE id = auth.uid() LIMIT 1) = 'admin' );
+CREATE POLICY "Admins pueden eliminar movimientos" ON public.movimientos FOR DELETE USING ( (SELECT rol FROM public.perfiles WHERE id = auth.uid() LIMIT 1) = 'admin' );
