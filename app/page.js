@@ -9,6 +9,7 @@ import Sidebar from '@/components/Sidebar'
 import Dashboard from '@/components/Dashboard'
 import Registros from '@/components/Registros'
 import AgregarProducto from '@/components/AgregarProducto'
+import Usuarios from '@/components/Usuarios'
 import { getProductos } from '@/lib/db'
 
 const PAGE_INFO = {
@@ -24,6 +25,10 @@ const PAGE_INFO = {
     title: 'Agregar Producto',
     subtitle: 'Nuevo producto o restock de existente',
   },
+  usuarios: {
+    title: 'Gestión de Usuarios',
+    subtitle: 'Administra roles y accesos',
+  }
 }
 
 function DateBadge() {
@@ -52,19 +57,28 @@ export default function HomePage() {
   const [productos, setProductos]  = useState([])
   const [loading, setLoading]      = useState(true)
   const [authChecking, setAuthChecking] = useState(true)
+  const [userRole, setUserRole] = useState(null)
 
   // ── SEGURIDAD: Verificar sesión activa ──
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    supabase.auth.getSession().then(async ({ data: { session } }) => {
       setSession(session)
+      if (session) {
+        const { data } = await supabase.from('perfiles').select('rol').eq('id', session.user.id).single()
+        if (data) setUserRole(data.rol)
+      }
       setAuthChecking(false)
       if (!session) router.push('/login')
     })
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
+    } = supabase.auth.onAuthStateChange(async (_event, session) => {
       setSession(session)
+      if (session) {
+        const { data } = await supabase.from('perfiles').select('rol').eq('id', session.user.id).single()
+        if (data) setUserRole(data.rol)
+      }
       if (!session) router.push('/login')
     })
 
@@ -110,6 +124,7 @@ export default function HomePage() {
           setActiveTab={setActiveTab}
           totalProductos={productos.length}
           totalUnidades={totalUnidades}
+          userRole={userRole}
         />
 
         {/* Main */}
@@ -132,16 +147,18 @@ export default function HomePage() {
               setProductos={setProductos}
               loading={loading}
               onTabChange={setActiveTab}
+              userRole={userRole}
             />
           )}
           {activeTab === 'registros' && <Registros />}
-          {activeTab === 'agregar' && (
+          {activeTab === 'agregar' && userRole === 'admin' && (
             <AgregarProducto
               productos={productos}
               setProductos={setProductos}
               setActiveTab={setActiveTab}
             />
           )}
+          {activeTab === 'usuarios' && userRole === 'admin' && <Usuarios />}
         </div>
       </div>
     </ToastProvider>

@@ -15,7 +15,7 @@ function getStockLevel(cantidad, minimo = 5) {
   return 'high'
 }
 
-export default function Dashboard({ productos, setProductos, loading, onTabChange }) {
+export default function Dashboard({ productos, setProductos, loading, onTabChange, userRole }) {
   const toast = useToast()
   const [search, setSearch]   = useState('')
   const [filter, setFilter]   = useState('Todos')
@@ -190,7 +190,7 @@ export default function Dashboard({ productos, setProductos, loading, onTabChang
               ? 'No hay productos con ese filtro.'
               : 'El inventario está vacío.'}
           </p>
-          {!search && filter === 'Todos' && (
+          {!search && filter === 'Todos' && userRole === 'admin' && (
             <button onClick={() => onTabChange('agregar')}>+ Agregar primer producto</button>
           )}
         </div>
@@ -204,6 +204,7 @@ export default function Dashboard({ productos, setProductos, loading, onTabChang
               onDecrement={() => handleQuantityChange(p, -1)}
               onEdit={() => setEditItem(p)}
               onDelete={() => setDeleteItem(p)}
+              userRole={userRole}
             />
           ))}
         </div>
