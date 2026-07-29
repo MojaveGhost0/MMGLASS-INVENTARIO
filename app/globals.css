@@ -51,9 +51,9 @@
   --text-muted:     #9ca3af;
 
   /* ── Layout ── */
-  --sidebar-w:      260px;
-  --topbar-h:       68px;
-  --mob-nav-h:      64px;
+  --sidebar-w:      280px;
+  --topbar-h:       88px;
+  --mob-nav-h:      68px;
 
   /* ── Font ── */
   --font: var(--font-inter), 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -154,23 +154,24 @@ input, select, textarea, button {
 }
 
 .sidebar-logo {
-  padding: 20px 18px;
+  height: var(--topbar-h);
+  padding: 0 24px;
   border-bottom: 1px solid var(--border);
   display: flex;
   align-items: center;
-  gap: 12px;
+  gap: 16px;
   position: relative;
 }
 
 .logo-img {
-  width: 42px;
-  height: 42px;
+  width: 50px;
+  height: 50px;
   object-fit: contain;
-  border-radius: var(--r-sm);
+  border-radius: var(--r-md);
   background: #ffffff;
-  padding: 4px;
+  padding: 6px;
   flex-shrink: 0;
-  filter: drop-shadow(0 2px 8px rgba(0,0,0,0.1));
+  box-shadow: 0 4px 12px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.02);
 }
 
 .sidebar-brand-wrap {
@@ -180,19 +181,19 @@ input, select, textarea, button {
 }
 
 .sidebar-brand {
-  font-size: 15px;
+  font-size: 20px;
   font-weight: 900;
-  letter-spacing: 0.06em;
+  letter-spacing: 0.04em;
   color: var(--text-primary);
   text-transform: uppercase;
 }
 
 .sidebar-sub {
-  font-size: 10px;
+  font-size: 11px;
   color: var(--accent);
-  letter-spacing: 0.14em;
+  letter-spacing: 0.16em;
   text-transform: uppercase;
-  font-weight: 600;
+  font-weight: 700;
   margin-top: 2px;
 }
 
@@ -407,25 +408,26 @@ input, select, textarea, button {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0 28px;
+  padding: 0 36px;
   background: rgba(244, 247, 246, 0.85);
-  backdrop-filter: blur(16px);
+  backdrop-filter: blur(20px);
   position: sticky;
   top: 0;
   z-index: 50;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.03);
 }
 
 .page-title {
-  font-size: 19px;
+  font-size: 26px;
   font-weight: 800;
   color: var(--text-primary);
-  letter-spacing: -0.02em;
+  letter-spacing: -0.03em;
 }
 
 .page-subtitle {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--text-secondary);
-  margin-top: 1px;
+  margin-top: 2px;
 }
 
 .topbar-right {
