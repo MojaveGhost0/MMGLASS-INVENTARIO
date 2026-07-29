@@ -93,7 +93,9 @@ export default function HomePage() {
       const data = await getProductos()
       setProductos(data)
     } catch (err) {
-      console.error('Error cargando productos:', err)
+      console.error('Error cargando productos:', err?.message || err)
+      if (err.details) console.error('Details:', err.details)
+      if (err.hint) console.error('Hint:', err.hint)
     } finally {
       setLoading(false)
     }
