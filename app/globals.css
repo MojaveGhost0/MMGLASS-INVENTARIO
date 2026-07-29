@@ -12,6 +12,9 @@
 :root {
   /* ── Backgrounds ── */
   --bg-base:        #f4f7f6;
+  --bg-mesh-1:      rgba(59, 130, 246, 0.08);
+  --bg-mesh-2:      rgba(20, 184, 166, 0.08);
+  --bg-mesh-3:      rgba(168, 85, 247, 0.05);
   --bg-sidebar:     #ffffff;
   --bg-card:        #ffffff;
   --bg-card-hover:  #f8fafc;
@@ -82,6 +85,25 @@ html, body {
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: -50%;
+  z-index: -1;
+  background: 
+    radial-gradient(circle at 15% 50%, var(--bg-mesh-1) 0%, transparent 40%),
+    radial-gradient(circle at 85% 30%, var(--bg-mesh-2) 0%, transparent 40%),
+    radial-gradient(circle at 50% 80%, var(--bg-mesh-3) 0%, transparent 40%);
+  animation: meshFlow 20s ease-in-out infinite alternate;
+  pointer-events: none;
+}
+
+@keyframes meshFlow {
+  0% { transform: rotate(0deg) scale(1); }
+  50% { transform: rotate(5deg) scale(1.1); }
+  100% { transform: rotate(-5deg) scale(1.05); }
 }
 
 input, select, textarea, button {
@@ -599,22 +621,30 @@ input, select, textarea, button {
 .products-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
-  gap: 14px;
+  gap: 16px;
+  animation: gridFadeUp 0.5s ease;
+}
+
+@keyframes gridFadeUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 /* ═══════════════════ PRODUCT CARD ═══════════════════ */
 
 .product-card {
-  background: var(--bg-card);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--border);
   border-radius: var(--r-xl);
-  padding: 22px;
+  padding: 24px;
   display: flex;
   flex-direction: column;
-  gap: 14px;
-  transition: all var(--t-slow);
+  gap: 16px;
+  transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
   position: relative;
   overflow: hidden;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.02);
 }
 
 /* Brillo glassmorphism interno */
@@ -633,10 +663,11 @@ input, select, textarea, button {
 }
 
 .product-card:hover {
-  border-color: rgba(59,130,246,0.25);
-  transform: translateY(-4px);
-  box-shadow: var(--s-lg), var(--s-accent);
-  background: var(--bg-card-hover);
+  border-color: var(--accent);
+  transform: translateY(-6px) scale(1.02);
+  box-shadow: 0 16px 32px rgba(59, 130, 246, 0.1), 0 0 0 1px var(--accent-glow) inset;
+  background: #ffffff;
+  z-index: 1;
 }
 
 .product-card.stock-low  { border-color: rgba(245,158,11,0.25); }
@@ -808,34 +839,37 @@ input, select, textarea, button {
 
 .btn-edit {
   flex: 1;
-  padding: 8px 12px;
+  padding: 10px 14px;
   color: var(--text-secondary);
-  font-size: 13px;
-  font-weight: 500;
+  font-size: 13.5px;
+  font-weight: 600;
+  background: rgba(255, 255, 255, 0.8);
 }
 
-.btn-edit svg { width: 13px; height: 13px; }
-
 .btn-edit:hover {
-  background: var(--accent-dim);
-  border-color: var(--border-accent);
-  color: var(--accent);
+  background: var(--accent);
+  border-color: var(--accent);
+  color: white;
+  box-shadow: 0 4px 12px var(--accent-glow);
+  transform: translateY(-1px);
 }
 
 .btn-delete {
-  width: 36px;
-  height: 36px;
-  color: var(--text-secondary);
-  flex-shrink: 0;
+  padding: 10px;
+  color: var(--text-muted);
+  background: rgba(255, 255, 255, 0.8);
 }
-
-.btn-delete svg { width: 14px; height: 14px; }
 
 .btn-delete:hover {
-  background: var(--red-dim);
-  border-color: rgba(239,68,68,0.3);
-  color: var(--red);
+  background: var(--red);
+  border-color: var(--red);
+  color: white;
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.25);
+  transform: translateY(-1px);
 }
+
+.btn-edit svg, .btn-delete svg { width: 14px; height: 14px; }
+
 
 /* ═══════════════════ SKELETON LOADING ═══════════════════ */
 
@@ -989,43 +1023,60 @@ input, select, textarea, button {
 .log-chip span { font-weight: 700; color: var(--text-primary); }
 
 .log-table-wrapper {
-  background: var(--bg-card);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--border);
-  border-radius: var(--r-lg);
+  border-radius: var(--r-xl);
   overflow: hidden;
   overflow-x: auto;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  animation: gridFadeUp 0.4s ease;
 }
 
 .log-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: 13px;
-  min-width: 580px;
+  font-size: 13.5px;
+  min-width: 600px;
 }
 
 .log-table th {
-  background: var(--bg-elevated);
+  background: rgba(255, 255, 255, 0.9);
   color: var(--text-secondary);
   font-weight: 700;
   text-transform: uppercase;
-  font-size: 10.5px;
-  letter-spacing: 0.1em;
-  padding: 11px 16px;
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  padding: 14px 18px;
   text-align: left;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 2px solid var(--border);
   white-space: nowrap;
+  position: sticky;
+  top: 0;
+  z-index: 10;
 }
 
 .log-table td {
-  padding: 11px 16px;
+  padding: 14px 18px;
   border-bottom: 1px solid var(--border);
   color: var(--text-primary);
   vertical-align: middle;
 }
 
 .log-table tr:last-child td { border-bottom: none; }
-.log-table tbody tr { transition: background var(--t); }
-.log-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+.log-table tbody tr { 
+  transition: all var(--t);
+  background: transparent;
+}
+
+.log-table tbody tr:nth-child(even) {
+  background: rgba(0, 0, 0, 0.015);
+}
+
+.log-table tbody tr:hover { 
+  background: var(--bg-card-hover); 
+  transform: scale(1.002);
+}
 
 .log-date   { font-size: 12.5px; font-weight: 500; }
 .log-time   { font-size: 11px; color: var(--text-secondary); display: block; }
@@ -1114,11 +1165,13 @@ input, select, textarea, button {
 }
 
 .form-card {
-  background: var(--bg-card);
+  background: rgba(255, 255, 255, 0.6);
+  backdrop-filter: blur(12px);
   border: 1px solid var(--border);
   border-radius: var(--r-xl);
-  overflow: hidden;
-  animation: tabFadeIn 0.2s ease;
+  padding: 30px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.02);
+  animation: gridFadeUp 0.4s ease;
 }
 
 .form-card-header {
@@ -1181,25 +1234,38 @@ input, select, textarea, button {
 .form-group input,
 .form-group select,
 .form-group textarea {
-  padding: 11px 13px;
+  width: 100%;
+  padding: 12px 16px;
   border-radius: var(--r-md);
   border: 1px solid var(--border);
-  background: var(--bg-input);
+  background: rgba(255, 255, 255, 0.9);
   color: var(--text-primary);
-  font-size: 14px;
-  outline: none;
+  font-size: 14.5px;
   transition: all var(--t);
-  width: 100%;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02) inset;
+  outline: none;
 }
-
-.form-group input::placeholder,
-.form-group textarea::placeholder { color: var(--text-muted); }
 
 .form-group input:focus,
 .form-group select:focus,
 .form-group textarea:focus {
-  border-color: var(--border-accent);
-  box-shadow: 0 0 0 3px var(--accent-dim);
+  outline: none;
+  border-color: var(--accent);
+  background: #ffffff;
+  box-shadow: 0 0 0 3px var(--accent-glow), 0 2px 6px rgba(0,0,0,0.02) inset;
+}
+
+.form-group input:disabled,
+.form-group select:disabled,
+.form-group textarea:disabled {
+  opacity: 0.6;
+  background: rgba(0, 0, 0, 0.02);
+  cursor: not-allowed;
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: var(--text-muted);
 }
 
 .form-group textarea { resize: vertical; min-height: 75px; line-height: 1.5; }
@@ -1667,123 +1733,179 @@ input, select, textarea, button {
   .stats-row { grid-template-columns: 1fr; }
 }
 
-/* ═══════════════════ LOGIN PAGE (LIGHT THEME) ═══════════════════ */
+/* ═══════════════════ LOGIN PAGE (PREMIUM THEME) ═══════════════════ */
 
 .login-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f4f7f6; /* Light gray / almost white background */
+  background: transparent;
   padding: 20px;
+  position: relative;
+  overflow: hidden;
+}
+
+.login-container::before {
+  content: '';
+  position: absolute;
+  inset: -10%;
+  background: 
+    radial-gradient(circle at 0% 0%, var(--bg-mesh-1) 0%, transparent 50%),
+    radial-gradient(circle at 100% 100%, var(--bg-mesh-2) 0%, transparent 50%),
+    radial-gradient(circle at 50% 50%, var(--bg-mesh-3) 0%, transparent 60%);
+  animation: loginMesh 15s ease-in-out infinite alternate;
+  z-index: -1;
+}
+
+@keyframes loginMesh {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.2); }
 }
 
 .login-box {
-  background: #ffffff;
-  max-width: 420px;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(20px);
+  max-width: 440px;
   width: 100%;
-  border-radius: var(--r-xl);
-  padding: 40px;
-  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
-  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: var(--r-2xl);
+  padding: 48px;
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.08), 0 0 0 1px rgba(255, 255, 255, 0.4) inset;
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  animation: loginEnter 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes loginEnter {
+  from { opacity: 0; transform: translateY(30px) scale(0.95); }
+  to { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .login-header {
   text-align: center;
-  margin-bottom: 30px;
+  margin-bottom: 36px;
 }
 
 .login-logo {
   max-width: 180px;
   height: auto;
-  margin: 0 auto 20px;
+  margin: 0 auto 24px;
   display: block;
+  filter: drop-shadow(0 4px 12px rgba(0,0,0,0.1));
 }
 
 .login-header h2 {
-  color: #111827; /* Dark black/gray */
-  font-size: 24px;
+  color: var(--text-primary);
+  font-size: 26px;
   font-weight: 800;
-  margin-bottom: 8px;
-  letter-spacing: -0.02em;
+  margin-bottom: 6px;
+  letter-spacing: -0.03em;
 }
 
 .login-header p {
-  color: #6b7280;
-  font-size: 14px;
+  color: var(--text-secondary);
+  font-size: 15px;
 }
 
 .login-form {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 22px;
 }
 
 .login-form .form-group {
   display: flex;
   flex-direction: column;
-  gap: 6px;
+  gap: 8px;
 }
 
 .login-form label {
-  font-size: 13px;
+  font-size: 13.5px;
   font-weight: 600;
-  color: #374151; /* Dark text */
+  color: var(--text-primary);
   text-align: left;
 }
 
 .login-form input {
   width: 100%;
-  padding: 12px 16px;
+  padding: 14px 18px;
   border-radius: var(--r-md);
-  border: 1px solid #d1d5db;
-  background: #ffffff;
-  color: #111827;
-  font-size: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.9);
+  color: var(--text-primary);
+  font-size: 15px;
   transition: all var(--t);
+  box-shadow: 0 2px 6px rgba(0,0,0,0.02) inset;
 }
 
 .login-form input:focus {
   outline: none;
   border-color: var(--accent);
-  box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15); /* Accent color glow */
+  background: #ffffff;
+  box-shadow: 0 0 0 4px var(--accent-glow), 0 2px 6px rgba(0,0,0,0.02) inset;
+}
+
+.login-form input::placeholder {
+  color: var(--text-muted);
 }
 
 .login-form .btn-primary {
-  margin-top: 10px;
+  margin-top: 8px;
   width: 100%;
-  padding: 14px;
+  padding: 16px;
   border-radius: var(--r-md);
-  background: var(--accent); /* Uses blue accent */
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
   color: #ffffff;
   border: none;
-  font-size: 15px;
+  font-size: 16px;
   font-weight: 700;
   cursor: pointer;
   transition: all var(--t);
-  box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+  box-shadow: 0 8px 24px var(--accent-glow);
+  position: relative;
+  overflow: hidden;
+}
+
+.login-form .btn-primary::after {
+  content: '';
+  position: absolute;
+  top: 0; left: -100%; width: 50%; height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+  transition: 0.5s;
 }
 
 .login-form .btn-primary:hover:not(:disabled) {
-  background: var(--accent-hover);
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(59, 130, 246, 0.4);
+  box-shadow: 0 12px 28px var(--accent-glow);
+}
+
+.login-form .btn-primary:hover:not(:disabled)::after {
+  left: 150%;
+}
+
+.login-form .btn-primary:active:not(:disabled) {
+  transform: translateY(1px);
 }
 
 .login-form .btn-primary:disabled {
-  opacity: 0.6;
+  opacity: 0.7;
   cursor: not-allowed;
   transform: none;
   box-shadow: none;
 }
 
 .login-error {
-  background: #fee2e2;
-  color: #b91c1c;
-  padding: 12px;
+  background: var(--red-dim);
+  color: var(--red);
+  padding: 14px;
   border-radius: var(--r-md);
-  font-size: 13px;
+  font-size: 14px;
   text-align: center;
-  border: 1px solid #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.2);
   font-weight: 500;
+  animation: fadeUp 0.3s ease;
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
 }
