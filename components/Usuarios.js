@@ -60,11 +60,11 @@ export default function Usuarios() {
         <h2 className="section-title">Gestión de Usuarios</h2>
       </div>
 
-      <div className="table-container" style={{ marginTop: '2rem' }}>
-        <table className="registros-table">
+      <div className="log-table-wrapper" style={{ marginTop: '2rem' }}>
+        <table className="log-table">
           <thead>
             <tr>
-              <th>Correo</th>
+              <th>Usuario</th>
               <th>Rol Actual</th>
               <th>Fecha Registro</th>
               <th style={{ textAlign: 'right' }}>Acciones</th>
@@ -73,21 +73,49 @@ export default function Usuarios() {
           <tbody>
             {loading ? (
               <tr>
-                <td colSpan="4" style={{ textAlign: 'center', padding: '2rem' }}>
-                  Cargando...
+                <td colSpan="4" style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-muted)' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '10px' }}>
+                    <div style={{ width: '24px', height: '24px', border: '2px solid var(--accent-dim)', borderTopColor: 'var(--accent)', borderRadius: '50%', animation: 'spin 1s linear infinite' }} />
+                    Cargando usuarios...
+                  </div>
                 </td>
               </tr>
             ) : usuarios.length === 0 ? (
               <tr>
-                <td colSpan="4" style={{ textAlign: 'center', padding: '2rem' }}>
-                  No se encontraron usuarios.
+                <td colSpan="4" style={{ textAlign: 'center', padding: '4rem', color: 'var(--text-muted)' }}>
+                  <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" style={{ marginBottom: '1rem', opacity: 0.5 }}>
+                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="9" cy="7" r="4"></circle>
+                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                  </svg>
+                  <p style={{ fontSize: '15px' }}>No se encontraron usuarios registrados.</p>
                 </td>
               </tr>
             ) : (
               usuarios.map(user => (
                 <tr key={user.id}>
                   <td>
-                    <strong>{user.email}</strong>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      <div style={{ 
+                        width: '36px', height: '36px', 
+                        borderRadius: 'var(--r-md)', 
+                        background: 'var(--bg-elevated)', 
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        color: 'var(--accent)', fontWeight: 'bold',
+                        border: '1px solid var(--border)'
+                      }}>
+                        {user.email.charAt(0).toUpperCase()}
+                      </div>
+                      <div style={{ display: 'flex', flexDirection: 'column' }}>
+                        <span style={{ fontWeight: '600', color: 'var(--text-primary)', fontSize: '15px' }}>
+                          {user.email.split('@')[0]}
+                        </span>
+                        <span style={{ fontSize: '13px', color: 'var(--text-muted)' }}>
+                          {user.email}
+                        </span>
+                      </div>
+                    </div>
                   </td>
                   <td>
                     <span className={`stock-pill ${user.rol === 'admin' ? 'ok' : 'normal'}`}>
@@ -95,12 +123,21 @@ export default function Usuarios() {
                       {user.rol}
                     </span>
                   </td>
-                  <td>{new Date(user.created_at).toLocaleDateString('es-VE')}</td>
+                  <td style={{ color: 'var(--text-secondary)' }}>
+                    {new Date(user.created_at).toLocaleDateString('es-VE', { year: 'numeric', month: 'short', day: 'numeric' })}
+                  </td>
                   <td style={{ textAlign: 'right' }}>
                     <button 
                       className="btn-edit" 
                       onClick={() => handleRoleChange(user.id, user.rol)}
-                      style={{ padding: '0.4rem 0.8rem', background: 'var(--bg-elevated)' }}
+                      style={{ 
+                        padding: '8px 16px', 
+                        background: user.rol === 'admin' ? 'var(--bg-elevated)' : 'var(--accent)', 
+                        color: user.rol === 'admin' ? 'var(--text-secondary)' : '#fff',
+                        border: user.rol === 'admin' ? '1px solid var(--border)' : 'none',
+                        fontSize: '13px',
+                        fontWeight: '600'
+                      }}
                     >
                       {user.rol === 'admin' ? 'Hacer Usuario' : 'Hacer Admin'}
                     </button>
