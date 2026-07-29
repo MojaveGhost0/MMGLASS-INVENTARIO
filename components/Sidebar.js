@@ -2,7 +2,7 @@
 
 import { supabase } from '@/lib/supabase'
 
-export default function Sidebar({ activeTab, setActiveTab, totalProductos, totalUnidades, userRole }) {
+export default function Sidebar({ activeTab, setActiveTab, totalProductos, totalUnidades, userRole, isOpen, setIsOpen }) {
   const baseNavItems = [
     {
       id: 'dashboard',
@@ -60,16 +60,37 @@ export default function Sidebar({ activeTab, setActiveTab, totalProductos, total
     window.location.reload()
   }
 
+  const handleTabClick = (id) => {
+    setActiveTab(id)
+    if (setIsOpen) setIsOpen(false) // Close sidebar on mobile after selecting
+  }
+
   return (
     <>
-      {/* ── Desktop Sidebar ── */}
-      <aside className="sidebar">
+      {/* ── Overlay para Mobile ── */}
+      <div 
+        className={`sidebar-overlay ${isOpen ? 'show' : ''}`} 
+        onClick={() => setIsOpen && setIsOpen(false)}
+      />
+
+      {/* ── Sidebar Desktop / Mobile Drawer ── */}
+      <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
           <img src="/mmglass_logo.jpeg" alt="MMGlass" className="logo-img" />
           <div className="sidebar-brand-wrap">
             <span className="sidebar-brand">MMGlass</span>
             <span className="sidebar-sub">Inventario</span>
           </div>
+          {/* Close button inside sidebar on mobile */}
+          <button 
+            className="mobile-close-btn"
+            onClick={() => setIsOpen && setIsOpen(false)}
+          >
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <line x1="18" y1="6" x2="6" y2="18"></line>
+              <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+          </button>
         </div>
 
         <nav className="sidebar-nav">
@@ -78,22 +99,24 @@ export default function Sidebar({ activeTab, setActiveTab, totalProductos, total
             <button
               key={item.id}
               className={`nav-item${activeTab === item.id ? ' active' : ''}`}
-              onClick={() => setActiveTab(item.id)}
+              onClick={() => handleTabClick(item.id)}
             >
-              {item.icon}
-              <span>{item.label}</span>
+              <span className="nav-icon">{item.icon}</span>
+              <span className="nav-text">{item.label}</span>
             </button>
           ))}
         </nav>
 
         <div className="sidebar-footer">
           <button className="nav-item btn-logout" onClick={handleLogout} style={{color: '#f87171', marginBottom: '1rem', border: '1px solid rgba(239, 68, 68, 0.2)'}}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="18" height="18">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/>
-              <line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-            <span>Cerrar Sesión</span>
+            <span className="nav-icon">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="18" height="18">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+              </svg>
+            </span>
+            <span className="nav-text">Cerrar Sesión</span>
           </button>
           
           <div className="sidebar-stats-card">
@@ -109,30 +132,6 @@ export default function Sidebar({ activeTab, setActiveTab, totalProductos, total
           </div>
         </div>
       </aside>
-
-      {/* ── Mobile Bottom Nav ── */}
-      <nav className="mobile-nav">
-        <div className="mobile-nav-inner">
-          {navItems.map(item => (
-            <button
-              key={item.id}
-              className={`mob-nav-btn${activeTab === item.id ? ' active' : ''}`}
-              onClick={() => setActiveTab(item.id)}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </button>
-          ))}
-          <button className="mob-nav-btn" onClick={handleLogout} style={{color: '#f87171'}}>
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" width="20" height="20">
-              <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
-              <polyline points="16 17 21 12 16 7"/>
-              <line x1="21" y1="12" x2="9" y2="12"/>
-            </svg>
-            <span>Salir</span>
-          </button>
-        </div>
-      </nav>
     </>
   )
 }

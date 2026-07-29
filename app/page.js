@@ -58,6 +58,7 @@ export default function HomePage() {
   const [loading, setLoading]      = useState(true)
   const [authChecking, setAuthChecking] = useState(true)
   const [userRole, setUserRole] = useState(null)
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false)
 
   // ── SEGURIDAD: Verificar sesión activa ──
   useEffect(() => {
@@ -118,13 +119,15 @@ export default function HomePage() {
   return (
     <ToastProvider>
       <div className="app-layout">
-        {/* Sidebar + Mobile nav */}
+        {/* Sidebar */}
         <Sidebar
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           totalProductos={productos.length}
           totalUnidades={totalUnidades}
           userRole={userRole}
+          isOpen={isSidebarOpen}
+          setIsOpen={setIsSidebarOpen}
         />
 
         {/* Main */}
@@ -132,8 +135,20 @@ export default function HomePage() {
           {/* Top bar */}
           <header className="topbar">
             <div className="topbar-left">
-              <h1 className="page-title">{info.title}</h1>
-              <p className="page-subtitle">{info.subtitle}</p>
+              <button 
+                className="mobile-menu-btn"
+                onClick={() => setIsSidebarOpen(true)}
+              >
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="3" y1="12" x2="21" y2="12"></line>
+                  <line x1="3" y1="6" x2="21" y2="6"></line>
+                  <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+              </button>
+              <div>
+                <h1 className="page-title">{info.title}</h1>
+                <p className="page-subtitle">{info.subtitle}</p>
+              </div>
             </div>
             <div className="topbar-right">
               <DateBadge />
