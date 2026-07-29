@@ -32,7 +32,7 @@ export default function LoginPage() {
     <div className="login-container">
       <div className="login-box">
         <div className="login-header">
-          <img src="/mmglass_logo.jpeg" alt="MMGlass" className="login-logo" />
+          <img src="/logo.png" alt="MMGlass" className="login-logo" />
           <h2>Sistema de Inventario</h2>
           <p>Inicia sesión para continuar</p>
         </div>

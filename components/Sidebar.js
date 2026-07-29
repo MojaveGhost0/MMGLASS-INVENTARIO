@@ -76,7 +76,7 @@ export default function Sidebar({ activeTab, setActiveTab, totalProductos, total
       {/* ── Sidebar Desktop / Mobile Drawer ── */}
       <aside className={`sidebar ${isOpen ? 'open' : ''}`}>
         <div className="sidebar-logo">
-          <img src="/mmglass_logo.jpeg" alt="MMGlass" className="logo-img" />
+          <img src="/logo.png" alt="MMGlass" className="logo-img" />
           <div className="sidebar-brand-wrap">
             <span className="sidebar-brand">MMGlass</span>
             <span className="sidebar-sub">Inventario</span>

@@ -108,7 +108,24 @@ export default function HomePage() {
   }, [session, loadProductos])
 
   if (authChecking) {
-    return <div className="login-container"><div className="login-error">Verificando acceso...</div></div>
+    return (
+      <div style={{ height: '100vh', width: '100vw', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', background: 'var(--bg-base)' }}>
+        <div style={{ position: 'relative', display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <img 
+            src="/logo.png" 
+            alt="MMGlass Logo" 
+            style={{ width: '80px', height: '80px', objectFit: 'contain', zIndex: 10 }}
+          />
+          <div style={{ 
+            position: 'absolute', width: '110px', height: '110px', 
+            border: '2px solid transparent', borderTopColor: 'var(--accent)', 
+            borderRadius: '50%', animation: 'spin 1.5s cubic-bezier(0.4, 0, 0.2, 1) infinite' 
+          }} />
+        </div>
+        <h2 style={{ marginTop: '24px', fontSize: '18px', fontWeight: '700', color: 'var(--text-primary)', letterSpacing: '0.04em' }}>MMGLASS</h2>
+        <p style={{ marginTop: '4px', fontSize: '13px', color: 'var(--text-secondary)', letterSpacing: '0.1em', textTransform: 'uppercase' }}>Iniciando Sistema...</p>
+      </div>
+    )
   }
 
   if (!session) {
